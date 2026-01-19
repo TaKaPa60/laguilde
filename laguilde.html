@@ -1,0 +1,958 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>La Guilde</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary-color: #8b4513;
+            --secondary-color: #d2691e;
+            --accent-color: #f4a460;
+            --dark-color: #2c1810;
+            --light-color: #f5e6d3;
+            --text-color: #3e2723;
+            --background-color: #f8f1e5;
+            --gold-color: #daa520;
+            --success-color: #4caf50;
+            --border-radius: 8px;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background-color: var(--background-color);
+            color: var(--text-color);
+            background-image: url('https://cdn.discordapp.com/attachments/1462776814039601273/1462778151431045160/Bannier.png?ex=696f6dd0&is=696e1c50&hm=1b978995d773aa861d564346907697b73f076b572d781548b3e5ac1c652d1760&?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80');
+            background-size: cover;
+            background-attachment: fixed;
+            background-position: center;
+            min-height: 100vh;
+        }
+        
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            z-index: -1;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        header {
+            background-color: rgba(44, 24, 16, 0.9);
+            border-bottom: 3px solid var(--secondary-color);
+            padding: 20px 0;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.5);
+        }
+        
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        
+        .logo-icon {
+            font-size: 2.5rem;
+            color: var(--accent-color);
+        }
+        
+        .logo h1 {
+            color: var(--light-color);
+            font-size: 2rem;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.7);
+            letter-spacing: 1px;
+        }
+        
+        nav ul {
+            display: flex;
+            list-style: none;
+            gap: 25px;
+        }
+        
+        nav a {
+            color: var(--light-color);
+            text-decoration: none;
+            font-size: 1.1rem;
+            padding: 10px 15px;
+            border-radius: var(--border-radius);
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        nav a:hover, nav a.active {
+            background-color: rgba(139, 69, 19, 0.7);
+            color: var(--accent-color);
+        }
+        
+        nav a::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background-color: var(--accent-color);
+            transition: width 0.3s ease;
+        }
+        
+        nav a:hover::after {
+            width: 100%;
+        }
+        
+        main {
+            min-height: 70vh;
+            background-color: rgba(248, 241, 229, 0.9);
+            border-radius: var(--border-radius);
+            margin: 30px 0;
+            padding: 30px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            border: 1px solid var(--primary-color);
+        }
+        
+        .page {
+            display: none;
+            animation: fadeIn 0.5s ease;
+        }
+        
+        .page.active {
+            display: block;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        
+        h2 {
+            color: var(--primary-color);
+            font-size: 2.2rem;
+            margin-bottom: 25px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid var(--secondary-color);
+            text-align: center;
+        }
+        
+        .guild-description {
+            font-size: 1.2rem;
+            line-height: 1.6;
+            margin-bottom: 40px;
+            text-align: center;
+            max-width: 800px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        
+        .members-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 30px;
+            margin-top: 30px;
+        }
+        
+        .member-card {
+            background: linear-gradient(to bottom, rgba(248, 241, 229, 0.9), rgba(210, 105, 30, 0.1));
+            border-radius: var(--border-radius);
+            padding: 20px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            border: 1px solid var(--primary-color);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            text-align: center;
+        }
+        
+        .member-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+        }
+        
+        .member-avatar {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 4px solid var(--secondary-color);
+            margin-bottom: 15px;
+        }
+        
+        .member-name {
+            font-size: 1.5rem;
+            color: var(--dark-color);
+            margin-bottom: 5px;
+        }
+        
+        .member-role {
+            color: var(--secondary-color);
+            font-weight: bold;
+            margin-bottom: 15px;
+            font-size: 1.1rem;
+        }
+        
+        .member-desc {
+            font-size: 0.95rem;
+            line-height: 1.5;
+        }
+        
+        /* Page Activités */
+        .activities-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            gap: 30px;
+        }
+        
+        .activity-card {
+            background: linear-gradient(to bottom right, rgba(248, 241, 229, 0.9), rgba(244, 164, 96, 0.2));
+            border-radius: var(--border-radius);
+            padding: 25px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            border: 1px solid var(--primary-color);
+        }
+        
+        .activity-title {
+            font-size: 1.5rem;
+            color: var(--primary-color);
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .activity-icon {
+            color: var(--secondary-color);
+            font-size: 1.8rem;
+        }
+        
+        .accomplishments-list {
+            list-style-type: none;
+            margin-top: 15px;
+        }
+        
+        .accomplishments-list li {
+            padding: 8px 0;
+            border-bottom: 1px dashed var(--accent-color);
+            display: flex;
+            justify-content: space-between;
+        }
+        
+        .accomplishments-list li:last-child {
+            border-bottom: none;
+        }
+        
+        .date {
+            color: var(--secondary-color);
+            font-weight: bold;
+        }
+        
+        .pvp-score {
+            display: flex;
+            justify-content: space-around;
+            flex-wrap: wrap;
+            gap: 20px;
+            margin-top: 25px;
+        }
+        
+        .pvp-stat {
+            background-color: rgba(139, 69, 19, 0.1);
+            border-radius: var(--border-radius);
+            padding: 20px;
+            text-align: center;
+            min-width: 150px;
+            border: 1px solid var(--primary-color);
+        }
+        
+        .stat-value {
+            font-size: 2.5rem;
+            color: var(--gold-color);
+            font-weight: bold;
+        }
+        
+        .stat-label {
+            color: var(--dark-color);
+            font-size: 1.1rem;
+            margin-top: 10px;
+        }
+        
+        /* Page Commerce - CORRECTION APPORTÉE ICI */
+        .commerce-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 30px;
+            margin-top: 30px;
+        }
+        
+        .commerce-card {
+            background: linear-gradient(to bottom right, rgba(248, 241, 229, 0.9), rgba(76, 175, 80, 0.1));
+            border-radius: var(--border-radius);
+            padding: 25px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            border: 1px solid var(--primary-color);
+            text-align: center;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        
+        .commerce-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+        }
+        
+        .commerce-avatar {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 3px solid var(--success-color);
+            margin-bottom: 15px;
+        }
+        
+        .commerce-name {
+            font-size: 1.4rem;
+            color: var(--dark-color);
+            margin-bottom: 5px;
+        }
+        
+        .commerce-specialty {
+            color: var(--success-color);
+            font-weight: bold;
+            margin-bottom: 15px;
+        }
+        
+        .resources-list {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 10px;
+            margin-top: 15px;
+        }
+        
+        .resource-tag {
+            background-color: rgba(76, 175, 80, 0.2);
+            color: var(--success-color);
+            padding: 5px 10px;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            border: 1px solid var(--success-color);
+        }
+        
+        .availability {
+            margin-top: 15px;
+            font-weight: bold;
+            color: var(--primary-color);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+        
+        .online {
+            color: var(--success-color);
+        }
+        
+        .offline {
+            color: #888;
+        }
+        
+        /* Style pour les cartes de boss */
+        .boss-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            gap: 30px;
+            margin-top: 30px;
+        }
+        
+        .boss-card {
+            background: linear-gradient(to bottom right, rgba(248, 241, 229, 0.9), rgba(139, 69, 19, 0.2));
+            border-radius: var(--border-radius);
+            padding: 20px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            border: 1px solid var(--primary-color);
+            transition: transform 0.3s ease;
+        }
+        
+        .boss-card:hover {
+            transform: translateY(-5px);
+        }
+        
+        footer {
+            background-color: rgba(44, 24, 16, 0.9);
+            color: var(--light-color);
+            text-align: center;
+            padding: 25px 0;
+            margin-top: 40px;
+            border-top: 3px solid var(--secondary-color);
+        }
+        
+        .footer-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+        
+        .social-links {
+            display: flex;
+            gap: 20px;
+        }
+        
+        .social-links a {
+            color: var(--light-color);
+            font-size: 1.5rem;
+            transition: color 0.3s ease;
+        }
+        
+        .social-links a:hover {
+            color: var(--accent-color);
+        }
+        
+        .game-reference {
+            font-style: italic;
+            color: var(--accent-color);
+        }
+        
+        /* Responsive */
+        @media (max-width: 768px) {
+            .header-content {
+                flex-direction: column;
+                gap: 20px;
+            }
+            
+            nav ul {
+                flex-wrap: wrap;
+                justify-content: center;
+            }
+            
+            .members-container, .activities-container, .commerce-container, .boss-container {
+                grid-template-columns: 1fr;
+            }
+            
+            .footer-content {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="container header-content">
+            <div class="logo">
+                <h1>La Guilde</h1>
+            </div>
+            <nav>
+                <ul>
+                    <li><a href="#" class="nav-link active" data-page="presentation">Présentation</a></li>
+                    <li><a href="#" class="nav-link" data-page="activites">Activités</a></li>
+                    <li><a href="#" class="nav-link" data-page="commerce">Commerce</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+    
+    <div class="container">
+        <main>
+            <!-- Page Présentation -->
+            <section id="presentation" class="page active">
+                <h2>La Guilde</h2>
+                <div class="guild-description">
+                    <p>Fondée au cœur des montagnes où les vents se rencontrent, notre guilde rassemble des aventuriers unis par la passion de l'exploration et la quête d'équilibre. Nous sommes une famille de combattants, d'artisans et de stratèges, déterminés à laisser notre empreinte dans le monde de Where Winds Meet.</p>
+                    <p>Notre philosophie : "Dans le vent, nous trouvons notre force. Dans l'union, nous trouvons notre chemin."</p>
+                </div>
+                
+                <h2>Membres Fondateurs</h2>
+                <div class="members-container">
+                    <!-- Membre 1 - Ayce -->
+                    <div class="member-card">
+                        <img src="https://cdn.discordapp.com/attachments/1462776814039601273/1462778080702763200/Ayce.jfif?ex=696f6dbf&is=696e1c3f&hm=f8a258e6f91852e5514d67d3e02e8b85f542e9496c7abd51fa45aa89d8fdeb66&?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&q=80" alt="Ayce" class="member-avatar">
+                        <h3 class="member-name">Ayce</h3>
+                        <div class="member-role">Chef de Guilde & Maître Épéiste</div>
+                        <p class="member-desc">Fondateur charismatique de la guilde, Ayce est un maître du sabre dont la renommée dépasse les frontières. Ancien disciple d'une école d'arts martiaux secrète, il cherche à unifier les différents styles de combat pour créer une nouvelle voie martiale.</p>
+                    </div>
+                    
+                    <!-- Membre 2 - Silvosse -->
+                    <div class="member-card">
+                        <img src="https://cdn.discordapp.com/attachments/1462776814039601273/1462778307073540299/OIP_1.webp?ex=696f6df5&is=696e1c75&hm=281effd1cd454d667601e823c5101ea9866d47a81197dd06a2f4b5be463a610a&?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&q=80" alt="Silvosse" class="member-avatar">
+                        <h3 class="member-name">Silvosse</h3>
+                        <div class="member-role">Archè d'Élite & Éclaireur</div>
+                        <p class="member-desc">Silvosse est un tireur d'élite silencieux capable de toucher une mouche à 200 pas. Originaire des forêts du Nord, il a développé un lien unique avec la nature qui lui permet de se fondre dans n'importe quel environnement. Ses compétences de pistage sont inestimables pour la guilde.</p>
+                    </div>
+                    
+                    <!-- Membre 3 - Djocko -->
+                    <div class="member-card">
+                        <img src="https://cdn.discordapp.com/attachments/1462776814039601273/1462778257542742036/simbolos-iconicos-chinos-arte-digital_961038-67563.jpg?ex=696f6de9&is=696e1c69&hm=81c677851021471b8a9da8d5e2ce0710f8b6a1f4cea833b0066ed0800c03884b&?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&q=80" alt="Djocko" class="member-avatar">
+                        <h3 class="member-name">Djocko</h3>
+                        <div class="member-role">Maître Alchimiste & Apothicaire</div>
+                        <p class="member-desc">Djocko est un alchimiste excentrique obsédé par la découverte de nouvelles recettes. Il passe ses journées dans son laboratoire enfumé, mélangeant des ingrédients rares pour créer des potions aux effets surprenants. Sa connaissance des plantes vénéneuses et curatives est sans égal.</p>
+                    </div>
+					
+					<!-- Membre 4 - TaKaPa -->
+                    <div class="member-card">
+                        <img src="https://cdn.discordapp.com/attachments/1462776814039601273/1462778106262851740/TaKaPa.jfif?ex=696f6dc5&is=696e1c45&hm=c5cc5ef5adb07055e8c59dd8ba71bcd685ef3444b4f2062155d9e00c4264089f&?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&q=80" alt="TaKaPa" class="member-avatar">
+                        <h3 class="member-name">TaKaPa</h3>
+                        <div class="member-role">Maître Forgeron & Ingénieur</div>
+                        <p class="member-desc">Artisan génial et perfectionniste, TaKaPa transforme le métal brut en œuvres d'art fonctionnelles. Ses armes sont réputées pour leur équilibre parfait et leur durabilité exceptionnelle. Il expérimente constamment de nouveaux alliages et mécanismes pour repousser les limites de l'artisanat.</p>
+                    </div>
+					
+					<!-- Membre 5 - Amnd (Seul personnage féminin) -->
+                    <div class="member-card">
+                        <img src="https://cdn.discordapp.com/attachments/1462776814039601273/1462778123169959936/Amnd.jfif?ex=696f6dc9&is=696e1c49&hm=72fbbc556fd69ccfd7007bc874e00eefe53b7eede70afb4fcadb61f2873222eb&?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&q=80" alt="Amnd" class="member-avatar">
+                        <h3 class="member-name">Amnd</h3>
+                        <div class="member-role">Diplomate & Stratège</div>
+                        <p class="member-desc">Seule femme parmi les fondateurs, Amnd est la voix de la raison et la diplomate de la guilde. Son intelligence stratégique et son éloquence ont évité de nombreux conflits. Elle possède une connaissance encyclopédique des différentes factions et cultures du royaume, faisant d'elle une négociatrice hors pair.</p>
+                    </div>
+					
+					<!-- Membre 6 - FerIech -->
+                    <div class="member-card">
+                        <img src="https://cdn.discordapp.com/attachments/1462776814039601273/1462778288442310707/OIP.webp?ex=696f6df1&is=696e1c71&hm=0d9755f3436067e63799a1c93035fe0a67a1311d4c4d36bb4c8868823d7b4e71&?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&q=80" alt="FerIech" class="member-avatar">
+                        <h3 class="member-name">FerIech</h3>
+                        <div class="member-role">Géomancien & Archiviste</div>
+                        <p class="member-desc">FerIech est un érudit mystérieux spécialisé dans la géomancie et les arts divinatoires. Il cartographie les flux d'énergie tellurique et étudie les anciennes prophéties. Sa bibliothèque personnelle contient des textes rares que même les plus grandes académies n'ont jamais vus.</p>
+                    </div>
+                </div>
+            </section>
+            
+			<!-- Page Activités -->
+			<section id="activites" class="page">
+				<h2>Activités de la Guilde</h2>
+				
+				<div class="activities-container">
+					<!-- Accomplissements PVE -->
+					<div class="activity-card">
+						<h3 class="activity-title">
+							<i class="fas fa-dragon activity-icon"></i>
+							Accomplissements PVE
+						</h3>
+						<p>Nos plus grandes victoires contre les forces des ténèbres et les défis du monde de Where Winds Meet.</p>
+						
+						<ul class="accomplishments-list">
+							<li>
+								<span>Défaite du Lions Jumeaux (Raid 10)</span>
+								<span class="date">--/--/2026</span>
+							</li>
+							<li>
+								<span>Défaite du Maitre des Fantômes (Raid 10)</span>
+								<span class="date">--/--/2026</span>
+							</li>
+							<li>
+								<span>Victoire en DUO, Battle Royale</span>
+								<span class="date">--/--/2026</span>
+							</li>
+							<li>
+								<span>Victoire à 5, Battle Royale</span>
+								<span class="date">--/--/2026</span>
+							</li>
+							<li>
+								<span>Atteindre le Niveau 3 de GUILDE</span>
+								<span class="date">--/--/2026</span>
+							</li>
+						</ul>
+					</div>
+					
+					<!-- Score PVP -->
+					<div class="activity-card">
+						<h3 class="activity-title">
+							<i class="fas fa-trophy activity-icon"></i>
+							Suivi des Scores PVP
+						</h3>
+						<p>Notre performance dans les tournois et combats contre les autres guildes.</p>
+						
+						<div class="pvp-score">
+							<div class="pvp-stat">
+								<div class="stat-value">--%</div>
+								<div class="stat-label">Taux de Victoire</div>
+							</div>
+							<div class="pvp-stat">
+								<div class="stat-value">--</div>
+								<div class="stat-label">Tournois Gagnés</div>
+							</div>
+							<div class="pvp-stat">
+								<div class="stat-value">--</div>
+								<div class="stat-label">Classement Mondial</div>
+							</div>
+							<div class="pvp-stat">
+								<div class="stat-value">--</div>
+								<div class="stat-label">Duels Remportés</div>
+							</div>
+						</div>
+						
+						<h3 style="margin-top: 30px; font-size: 1.3rem;">Prochains Événements PVP</h3>
+						<ul class="accomplishments-list">
+							<li>
+								<span>Tournoi des Cinq Éléments</span>
+								<span class="date">--/--/2026</span>
+							</li>
+							<li>
+								<span>Guerre des Guildes - Saison 3</span>
+								<span class="date">--/--/2026</span>
+							</li>
+							<li>
+								<span>Défi du Mont Tianfeng</span>
+								<span class="date">--/--/2026</span>
+							</li>
+						</ul>
+					</div>
+				</div>
+				
+				<!-- Nouvelle section Boss Mondiaux -->
+				<h2 style="margin-top: 50px;">Boss Mondiaux</h2>
+				<div class="boss-container">
+					
+					<!-- Marionettiste - Ouverture -->
+					<div class="boss-card">
+						<div style="display: flex; align-items: center; gap: 15px; margin-bottom: 15px;">
+							<img src="https://cdn.discordapp.com/attachments/1462776814039601273/1462809663623008381/OIG3.webp?ex=696f8b29&is=696e39a9&hm=c24c70771db64645981f4cc848749dd0399ea6886d18213357c385bda9f43edd&?ixlib=rb-4.0.3&auto=format&fit=crop&w=150&q=80" alt="Marionettiste - Ouverture" style="width: 80px; height: 80px; border-radius: 50%; object-fit: cover; border: 3px solid var(--secondary-color);">
+							<div>
+								<h3 style="color: var(--primary-color); margin: 0;">Marionettiste - Ouverture</h3>
+								<p style="color: var(--secondary-color); font-weight: bold; margin: 5px 0 0 0;">Maître des Fils Illusoires</p>
+							</div>
+						</div>
+						<p style="line-height: 1.6;">Ce boss manipule des marionnettes géantes avec une précision mortelle. La phase "Ouverture" représente le début de son spectacle macabre où il teste ses adversaires avec des attaques complexes mais prévisibles.</p>
+						<div style="display: flex; flex-wrap: wrap; gap: 8px; margin-top: 15px;">
+							<span style="background-color: rgba(139, 69, 19, 0.2); color: var(--primary-color); padding: 4px 10px; border-radius: 15px; font-size: 0.8rem;">Contrôle de Marionnettes</span>
+							<span style="background-color: rgba(139, 69, 19, 0.2); color: var(--primary-color); padding: 4px 10px; border-radius: 15px; font-size: 0.8rem;">Attaques Illusoires</span>
+						</div>
+					</div>
+					
+					<!-- Marionettiste - Rideau Final -->
+					<div class="boss-card">
+						<div style="display: flex; align-items: center; gap: 15px; margin-bottom: 15px;">
+							<img src="https://cdn.discordapp.com/attachments/1462776814039601273/1462809663623008381/OIG3.webp?ex=696f8b29&is=696e39a9&hm=c24c70771db64645981f4cc848749dd0399ea6886d18213357c385bda9f43edd&?ixlib=rb-4.0.3&auto=format&fit=crop&w=150&q=80" alt="Marionettiste - Rideau Final" style="width: 80px; height: 80px; border-radius: 50%; object-fit: cover; border: 3px solid #8b0000;">
+							<div>
+								<h3 style="color: #8b0000; margin: 0;">Marionettiste - Rideau Final</h3>
+								<p style="color: #8b0000; font-weight: bold; margin: 5px 0 0 0;">Phase Ultime Dévastatrice</p>
+							</div>
+						</div>
+						<p style="line-height: 1.6;">La forme ultime du Marionettiste, où il abandonne toute retenue. Il contrôle simultanément une armée de marionnettes et utilise des attaques de zone massives qui couvrent l'ensemble de l'arène.</p>
+						<div style="display: flex; flex-wrap: wrap; gap: 8px; margin-top: 15px;">
+							<span style="background-color: rgba(139, 0, 0, 0.2); color: #8b0000; padding: 4px 10px; border-radius: 15px; font-size: 0.8rem;">Armée de Marionnettes</span>
+							<span style="background-color: rgba(139, 0, 0, 0.2); color: #8b0000; padding: 4px 10px; border-radius: 15px; font-size: 0.8rem;">Attaques de Zone</span>
+						</div>
+					</div>
+					
+					<!-- Yi Dao -->
+					<div class="boss-card">
+						<div style="display: flex; align-items: center; gap: 15px; margin-bottom: 15px;">
+							<img src="https://cdn.discordapp.com/attachments/1462776814039601273/1462803520221614101/logo.png?ex=696f8570&is=696e33f0&hm=5a3a2f125298540d5142fd6dd77639ea621436a870dd8a0354a63228c7d63910&?ixlib=rb-4.0.3&auto=format&fit=crop&w=150&q=80" alt="Yi Dao" style="width: 80px; height: 80px; border-radius: 50%; object-fit: cover; border: 3px solid #006400;">
+							<div>
+								<h3 style="color: #006400; margin: 0;">Yi Dao</h3>
+								<p style="color: #006400; font-weight: bold; margin: 5px 0 0 0;">Général des Lames Jumelles</p>
+							</div>
+						</div>
+						<p style="line-height: 1.6;">Ancien général déchu, Yi Dao manie deux sabres avec une rapidité surnaturelle. Ses techniques de combat combinent précision chirurgicale et puissance brute, rendant chaque duel contre lui extrêmement éprouvant.</p>
+						<div style="display: flex; flex-wrap: wrap; gap: 8px; margin-top: 15px;">
+							<span style="background-color: rgba(0, 100, 0, 0.2); color: #006400; padding: 4px 10px; border-radius: 15px; font-size: 0.8rem;">Sabres Jumeaux</span>
+							<span style="background-color: rgba(0, 100, 0, 0.2); color: #006400; padding: 4px 10px; border-radius: 15px; font-size: 0.8rem;">Vitesse Extrême</span>
+						</div>
+					</div>
+					
+					<!-- Taoïste Endormi -->
+					<div class="boss-card">
+						<div style="display: flex; align-items: center; gap: 15px; margin-bottom: 15px;">
+							<img src="https://cdn.discordapp.com/attachments/1462776814039601273/1462803520221614101/logo.png?ex=696f8570&is=696e33f0&hm=5a3a2f125298540d5142fd6dd77639ea621436a870dd8a0354a63228c7d63910&?ixlib=rb-4.0.3&auto=format&fit=crop&w=150&q=80" alt="Taoïste Endormi" style="width: 80px; height: 80px; border-radius: 50%; object-fit: cover; border: 3px solid #4b0082;">
+							<div>
+								<h3 style="color: #4b0082; margin: 0;">Taoïste Endormi</h3>
+								<p style="color: #4b0082; font-weight: bold; margin: 5px 0 0 0;">Maître des Rêves Élémentaires</p>
+							</div>
+						</div>
+						<p style="line-height: 1.6;">Un sage qui combat depuis un état de sommeil méditatif. Il invoque les forces élémentaires à travers ses rêves, créant des environnements de combat changeants et des attaques imprévisibles.</p>
+						<div style="display: flex; flex-wrap: wrap; gap: 8px; margin-top: 15px;">
+							<span style="background-color: rgba(75, 0, 130, 0.2); color: #4b0082; padding: 4px 10px; border-radius: 15px; font-size: 0.8rem;">Contrôle Élémentaire</span>
+							<span style="background-color: rgba(75, 0, 130, 0.2); color: #4b0082; padding: 4px 10px; border-radius: 15px; font-size: 0.8rem;">Manipulation des Rêves</span>
+						</div>
+					</div>
+					
+					<!-- Divinité Démoniaque Terrestre -->
+					<div class="boss-card">
+						<div style="display: flex; align-items: center; gap: 15px; margin-bottom: 15px;">
+							<img src="https://cdn.discordapp.com/attachments/1462776814039601273/1462803520221614101/logo.png?ex=696f8570&is=696e33f0&hm=5a3a2f125298540d5142fd6dd77639ea621436a870dd8a0354a63228c7d63910&?ixlib=rb-4.0.3&auto=format&fit=crop&w=150&q=80" alt="Divinité Démoniaque Terrestre" style="width: 80px; height: 80px; border-radius: 50%; object-fit: cover; border: 3px solid #800000;">
+							<div>
+								<h3 style="color: #800000; margin: 0;">Divinité Démoniaque Terrestre</h3>
+								<p style="color: #800000; font-weight: bold; margin: 5px 0 0 0;">Entité Tellurique Corrompue</p>
+							</div>
+						</div>
+						<p style="line-height: 1.6;">Une ancienne divinité de la terre corrompue par la haine. Elle manipule le sol, les roches et la gravité, créant des séismes et des pièges géologiques mortels pour ses adversaires.</p>
+						<div style="display: flex; flex-wrap: wrap; gap: 8px; margin-top: 15px;">
+							<span style="background-color: rgba(128, 0, 0, 0.2); color: #800000; padding: 4px 10px; border-radius: 15px; font-size: 0.8rem;">Manipulation Tellurique</span>
+							<span style="background-color: rgba(128, 0, 0, 0.2); color: #800000; padding: 4px 10px; border-radius: 15px; font-size: 0.8rem;">Séismes</span>
+						</div>
+					</div>
+					
+					<!-- Lions Jumeaux -->
+					<div class="boss-card">
+						<div style="display: flex; align-items: center; gap: 15px; margin-bottom: 15px;">
+							<img src="https://cdn.discordapp.com/attachments/1462776814039601273/1462803520221614101/logo.png?ex=696f8570&is=696e33f0&hm=5a3a2f125298540d5142fd6dd77639ea621436a870dd8a0354a63228c7d63910&?ixlib=rb-4.0.3&auto=format&fit=crop&w=150&q=80" alt="Lions Jumeaux" style="width: 80px; height: 80px; border-radius: 50%; object-fit: cover; border: 3px solid #daa520;">
+							<div>
+								<h3 style="color: #daa520; margin: 0;">Lions Jumeaux</h3>
+								<p style="color: #daa520; font-weight: bold; margin: 5px 0 0 0;">Gardiens des Portes Célestes</p>
+							</div>
+						</div>
+						<p style="line-height: 1.6;">Deux lions mythiques qui attaquent en parfaite synchronisation. L'un contrôle le feu solaire, l'autre la lumière lunaire. Leur coordination est si parfaite qu'ils semblent partager une seule conscience.</p>
+						<div style="display: flex; flex-wrap: wrap; gap: 8px; margin-top: 15px;">
+							<span style="background-color: rgba(218, 165, 32, 0.2); color: #daa520; padding: 4px 10px; border-radius: 15px; font-size: 0.8rem;">Attaque Coordonnée</span>
+							<span style="background-color: rgba(218, 165, 32, 0.2); color: #daa520; padding: 4px 10px; border-radius: 15px; font-size: 0.8rem;">Feu Solaire/Lunaire</span>
+						</div>
+					</div>
+					
+					<!-- Maitre des Fantômes -->
+					<div class="boss-card">
+						<div style="display: flex; align-items: center; gap: 15px; margin-bottom: 15px;">
+							<img src="https://cdn.discordapp.com/attachments/1462776814039601273/1462803520221614101/logo.png?ex=696f8570&is=696e33f0&hm=5a3a2f125298540d5142fd6dd77639ea621436a870dd8a0354a63228c7d63910&?ixlib=rb-4.0.3&auto=format&fit=crop&w=150&q=80" alt="Maitre des Fantômes" style="width: 80px; height: 80px; border-radius: 50%; object-fit: cover; border: 3px solid #00008b;">
+							<div>
+								<h3 style="color: #00008b; margin: 0;">Maitre des Fantômes</h3>
+								<p style="color: #00008b; font-weight: bold; margin: 5px 0 0 0;">Seigneur des Âmes Perdues</p>
+							</div>
+						</div>
+						<p style="line-height: 1.6;">Un nécromancien qui a acquis le contrôle sur le royaume des esprits. Il invoque des fantômes anciens et utilise des attaques qui drainent l'énergie vitale de ses adversaires.</p>
+						<div style="display: flex; flex-wrap: wrap; gap: 8px; margin-top: 15px;">
+							<span style="background-color: rgba(0, 0, 139, 0.2); color: #00008b; padding: 4px 10px; border-radius: 15px; font-size: 0.8rem;">Invocation de Fantômes</span>
+							<span style="background-color: rgba(0, 0, 139, 0.2); color: #00008b; padding: 4px 10px; border-radius: 15px; font-size: 0.8rem;">Drain d'Énergie</span>
+						</div>
+					</div>
+					
+					<!-- Jeune Fille Louve -->
+					<div class="boss-card">
+						<div style="display: flex; align-items: center; gap: 15px; margin-bottom: 15px;">
+							<img src="https://cdn.discordapp.com/attachments/1462776814039601273/1462803520221614101/logo.png?ex=696f8570&is=696e33f0&hm=5a3a2f125298540d5142fd6dd77639ea621436a870dd8a0354a63228c7d63910&?ixlib=rb-4.0.3&auto=format&fit=crop&w=150&q=80" alt="Jeune Fille Louve" style="width: 80px; height: 80px; border-radius: 50%; object-fit: cover; border: 3px solid #808080;">
+							<div>
+								<h3 style="color: #808080; margin: 0;">Jeune Fille Louve</h3>
+								<p style="color: #808080; font-weight: bold; margin: 5px 0 0 0;">Esprit de la Meute</p>
+							</div>
+						</div>
+						<p style="line-height: 1.6;">Une jeune fille possédée par l'esprit d'une louve alpha légendaire. Elle alterne entre forme humaine et lupine, commandant une meute de loups fantômes et utilisant des attaques basées sur l'instinct sauvage.</p>
+						<div style="display: flex; flex-wrap: wrap; gap: 8px; margin-top: 15px;">
+							<span style="background-color: rgba(128, 128, 128, 0.2); color: #808080; padding: 4px 10px; border-radius: 15px; font-size: 0.8rem;">Transformation</span>
+							<span style="background-color: rgba(128, 128, 128, 0.2); color: #808080; padding: 4px 10px; border-radius: 15px; font-size: 0.8rem;">Commande de Meute</span>
+						</div>
+					</div>
+				</div>
+			</section>
+            
+            <!-- Page Commerce -->
+            <section id="commerce" class="page">
+                <h2>Commerce Coopératif</h2>
+                <div class="guild-description">
+                    <p>Nos membres spécialisés dans l'artisanat et le commerce sont ouverts aux échanges coopératifs. Vous trouverez ici leurs spécialités et disponibilités.</p>
+                </div>
+                
+                <div class="commerce-container">
+                    <!-- Membre Commerce 1 - Ayce -->
+                    <div class="commerce-card">
+                        <img src="https://cdn.discordapp.com/attachments/1462776814039601273/1462778080702763200/Ayce.jfif?ex=696f6dbf&is=696e1c3f&hm=f8a258e6f91852e5514d67d3e02e8b85f542e9496c7abd51fa45aa89d8fdeb66&?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&q=80" alt="Ayce" class="commerce-avatar">
+                        <h3 class="commerce-name">Ayce</h3>
+                        <div class="commerce-specialty">Entraîneur d'Arts Martiaux</div>
+                        <p>Offre des leçons de maniement du sabre et des techniques de combat avancées.</p>
+                        
+                        <div class="resources-list">
+                            <span class="resource-tag">Formations</span>
+                            <span class="resource-tag">Parchemins techniques</span>
+                            <span class="resource-tag">Conseils stratégiques</span>
+                        </div>
+                        
+                        <div class="availability online">
+                            <i class="fas fa-circle"></i> En ligne - Disponible
+                        </div>
+                    </div>
+                    
+                    <!-- Membre Commerce 2 - Silvosse -->
+                    <div class="commerce-card">
+                        <img src="https://cdn.discordapp.com/attachments/1462776814039601273/1462778307073540299/OIP_1.webp?ex=696f6df5&is=696e1c75&hm=281effd1cd454d667601e823c5101ea9866d47a81197dd06a2f4b5be463a610a&?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&q=80" alt="Silvosse" class="commerce-avatar">
+                        <h3 class="commerce-name">Silvosse</h3>
+                        <div class="commerce-specialty">Fabricant d'Arc & Pisteur</div>
+                        <p>Crée des arcs sur mesure et propose des services de pistage et de guidage.</p>
+                        
+                        <div class="resources-list">
+                            <span class="resource-tag">Arcs personnalisés</span>
+                            <span class="resource-tag">Services de pistage</span>
+                            <span class="resource-tag">Cartes détaillées</span>
+                        </div>
+                        
+                        <div class="availability online">
+                            <i class="fas fa-circle"></i> En ligne - Disponible
+                        </div>
+                    </div>
+                    
+                    <!-- Membre Commerce 3 - Djocko -->
+                    <div class="commerce-card">
+                        <img src="https://cdn.discordapp.com/attachments/1462776814039601273/1462778257542742036/simbolos-iconicos-chinos-arte-digital_961038-67563.jpg?ex=696f6de9&is=696e1c69&hm=81c677851021471b8a9da8d5e2ce0710f8b6a1f4cea833b0066ed0800c03884b&?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&q=80" alt="Djocko" class="commerce-avatar">
+                        <h3 class="commerce-name">Djocko</h3>
+                        <div class="commerce-specialty">Maître Alchimiste</div>
+                        <p>Potions, élixirs et ingrédients rares pour toutes vos aventures.</p>
+                        
+                        <div class="resources-list">
+                            <span class="resource-tag">Potions de soin</span>
+                            <span class="resource-tag">Élixirs de puissance</span>
+                            <span class="resource-tag">Herbes rares</span>
+                        </div>
+                        
+                        <div class="availability offline">
+                            <i class="fas fa-circle"></i> Hors ligne - Retour Proche
+                        </div>
+                    </div>
+                    
+                    <!-- Membre Commerce 4 - FerIech -->
+                    <div class="commerce-card">
+                        <img src="https://cdn.discordapp.com/attachments/1462776814039601273/1462778288442310707/OIP.webp?ex=696f6df1&is=696e1c71&hm=0d9755f3436067e63799a1c93035fe0a67a1311d4c4d36bb4c8868823d7b4e71&?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&q=80" alt="FerIech" class="commerce-avatar">
+                        <h3 class="commerce-name">FerIech</h3>
+                        <div class="commerce-specialty">Marchand d'Artéfacts</div>
+                        <p>Objets rares, reliques anciennes et curiosités de tout le royaume.</p>
+                        
+                        <div class="resources-list">
+                            <span class="resource-tag">Reliques anciennes</span>
+                            <span class="resource-tag">Cartes aux trésors</span>
+                            <span class="resource-tag">Objets décoratifs</span>
+                        </div>
+                        
+                        <div class="availability online">
+                            <i class="fas fa-circle"></i> En ligne - Disponible
+                        </div>
+                    </div>
+
+                    <!-- Membre Commerce 5 - TaKaPa -->
+                    <div class="commerce-card">
+                        <img src="https://cdn.discordapp.com/attachments/1462776814039601273/1462778106262851740/TaKaPa.jfif?ex=696f6dc5&is=696e1c45&hm=c5cc5ef5adb07055e8c59dd8ba71bcd685ef3444b4f2062155d9e00c4264089f&?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&q=80" alt="TaKaPa" class="commerce-avatar">
+                        <h3 class="commerce-name">TaKaPa</h3>
+                        <div class="commerce-specialty">Maître Forgeron</div>
+                        <p>Forge des armes et armures exceptionnelles sur commande.</p>
+                        
+                        <div class="resources-list">
+                            <span class="resource-tag">Armes sur mesure</span>
+                            <span class="resource-tag">Réparations expertes</span>
+                            <span class="resource-tag">Armures renforcées</span>
+                        </div>
+                        
+                        <div class="availability online">
+                            <i class="fas fa-circle"></i> En ligne - Disponible
+                        </div>
+                    </div>
+
+                    <!-- Membre Commerce 6 - Amnd -->
+                    <div class="commerce-card">
+                        <img src="https://cdn.discordapp.com/attachments/1462776814039601273/1462778123169959936/Amnd.jfif?ex=696f6dc9&is=696e1c49&hm=72fbbc556fd69ccfd7007bc874e00eefe53b7eede70afb4fcadb61f2873222eb&?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&q=80" alt="Amnd" class="commerce-avatar">
+                        <h3 class="commerce-name">Amnd</h3>
+                        <div class="commerce-specialty">Conseillère Diplomatique</div>
+                        <p>Services de médiation, négociation et conseils stratégiques.</p>
+                        
+                        <div class="resources-list">
+                            <span class="resource-tag">Médiation</span>
+                            <span class="resource-tag">Conseils stratégiques</span>
+                            <span class="resource-tag">Traductions</span>
+                        </div>
+                        
+                        <div class="availability online">
+                            <i class="fas fa-circle"></i> En ligne - Disponible
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </main>
+    </div>
+    
+    <footer>
+        <div class="container footer-content">
+            <div class="copyright">
+                <p>&copy; 2026 La Guilde - Where Winds Meet. Tous droits réservés.</p>
+                <p class="game-reference">Site de LA GUILDE sur<strong>Where Winds Meet</strong></p>
+            </div>
+            
+            <div class="social-links">
+                <a href="https://discord.gg/xhNegPwmn7"><i class="fab fa-discord"></i></a>
+<!--                <a href="#"><i class="fab fa-twitter"></i></a>
+                <a href="#"><i class="fab fa-youtube"></i></a> -->
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Navigation entre les pages
+        document.querySelectorAll('.nav-link').forEach(link => {
+            link.addEventListener('click', function(e) {
+                e.preventDefault();
+                
+                // Retirer la classe active de tous les liens
+                document.querySelectorAll('.nav-link').forEach(item => {
+                    item.classList.remove('active');
+                });
+                
+                // Ajouter la classe active au lien cliqué
+                this.classList.add('active');
+                
+                // Masquer toutes les pages
+                document.querySelectorAll('.page').forEach(page => {
+                    page.classList.remove('active');
+                });
+                
+                // Afficher la page correspondante
+                const pageId = this.getAttribute('data-page');
+                document.getElementById(pageId).classList.add('active');
+            });
+        });
+        
+        // Animation pour les cartes de membres
+        document.addEventListener('DOMContentLoaded', function() {
+            const memberCards = document.querySelectorAll('.member-card, .commerce-card');
+            
+            memberCards.forEach((card, index) => {
+                // Délai d'apparition pour chaque carte
+                card.style.opacity = '0';
+                card.style.transform = 'translateY(20px)';
+                
+                setTimeout(() => {
+                    card.style.transition = 'opacity 0.5s ease, transform 0.5s ease';
+                    card.style.opacity = '1';
+                    card.style.transform = 'translateY(0)';
+                }, 100 + (index * 100));
+            });
+            
+            // Mise à jour dynamique des scores PVP (simulation)
+            const statValues = document.querySelectorAll('.stat-value');
+            statValues.forEach(stat => {
+                const originalValue = stat.textContent;
+                if (originalValue !== '--' && originalValue !== '--%') {
+                    stat.textContent = '0';
+                    
+                    setTimeout(() => {
+                        let counter = 0;
+                        const targetValue = parseInt(originalValue);
+                        const increment = targetValue / 50;
+                        
+                        const updateCounter = () => {
+                            if (counter < targetValue) {
+                                counter += increment;
+                                stat.textContent = originalValue.includes('%') 
+                                    ? Math.round(counter) + '%' 
+                                    : Math.round(counter);
+                                setTimeout(updateCounter, 20);
+                            } else {
+                                stat.textContent = originalValue;
+                            }
+                        };
+                        
+                        updateCounter();
+                    }, 500);
+                }
+            });
+        });
+    </script>
+</body>
+</html>
